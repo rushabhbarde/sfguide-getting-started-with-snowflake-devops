@@ -1,5 +1,5 @@
 use role accountadmin;
-use schema quickstart_prod.gold;
+use schema quickstart_{{environment}}.gold;
 
 
 -- declarative target table of pipeline
@@ -16,7 +16,7 @@ create or alter table vacation_spots (
 , zoo_cnt int
 , korean_restaurant_cnt int
   -- STEP 5: INSERT CHANGES HERE
-) data_retention_time_in_days = 1;
+) data_retention_time_in_days = {{retention_time}};
 
 
 -- task to merge pipeline results into target table
@@ -82,7 +82,7 @@ create or alter task email_notification
       if (:options = '[]') then
         CALL SYSTEM$SEND_EMAIL(
             'email_integration',
-            '<insert your email here>', -- INSERT YOUR EMAIL HERE
+            'hrushabhb15@gmail.com', -- INSERT YOUR EMAIL HERE
             'New data successfully processed: No suitable vacation spots found.',
             'The query did not return any results. Consider adjusting your filters.');
       end if;
@@ -95,14 +95,14 @@ create or alter task email_notification
 
       CALL SYSTEM$SEND_EMAIL(
         'email_integration',
-        '<insert your email here>', -- INSERT YOUR EMAIL HERE
+        'hrushabhb15@gmail.com', -- INSERT YOUR EMAIL HERE
         'New data successfully processed: The perfect place for your summer vacation has been found.',
         :response);
     exception
         when EXPRESSION_ERROR then
             CALL SYSTEM$SEND_EMAIL(
             'email_integration',
-            '<insert your email here>', -- INSERT YOUR EMAIL HERE
+            'hrushabhb15@gmail.com', -- INSERT YOUR EMAIL HERE
             'New data successfully processed: Cortex LLM function inaccessible.',
             'It appears that the Cortex LLM functions are not available in your region');
     end;
